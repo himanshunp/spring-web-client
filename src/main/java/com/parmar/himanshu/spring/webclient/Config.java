@@ -1,5 +1,6 @@
 package com.parmar.himanshu.spring.webclient;
 
+import com.fasterxml.jackson.core.StreamReadConstraints;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioChannelOption;
 import io.netty.handler.logging.LogLevel;
@@ -11,6 +12,7 @@ import jdk.net.ExtendedSocketOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +27,21 @@ import reactor.netty.transport.logging.AdvancedByteBufFormat;
 public class Config {
   private static final Logger log = LoggerFactory.getLogger(Config.class);
   public static final String BASE_URL = "http://localhost:8000";
+
+  // Uncomment following bean declaration to increase jackson's max string length constraint and
+  // avoid http 400 error
+  // @Bean
+  Jackson2ObjectMapperBuilderCustomizer customStreamReadConstraints() {
+    return (builder) ->
+        builder.postConfigurer(
+            (objectMapper) ->
+                objectMapper
+                    .getFactory()
+                    .setStreamReadConstraints(
+                        StreamReadConstraints.builder()
+                            .maxStringLength(Integer.MAX_VALUE)
+                            .build()));
+  }
 
   @Bean
   @Qualifier("httpClientWithConnectionPool")
