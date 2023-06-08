@@ -1,0 +1,12 @@
+server:
+  port: 8000
+  tomcat:
+    connection-timeout: 300000
+    keep-alive-timeout: 300000
+    max-http-form-post-size: 8192MB
+spring:
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+      file-size-threshold: 500MB
